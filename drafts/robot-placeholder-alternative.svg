@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <g stroke="#cba6f7" stroke-linecap="round" stroke-linejoin="round" stroke-width="8">
+    <path d="M120 28v26" />
+    <circle cx="120" cy="22" r="8" fill="#f9e2af" stroke="#f9e2af" />
+    <path d="M96 55h48" stroke="#89b4fa" />
+    <path d="M78 72c0-10 8-18 18-18h48c10 0 18 8 18 18v46c0 10-8 18-18 18H96c-10 0-18-8-18-18V72Z" />
+    <path d="M64 82h14v28H64a14 14 0 0 1 0-28Zm112 0h-14v28h14a14 14 0 0 0 0-28Z" stroke="#89b4fa" />
+    <circle cx="103" cy="91" r="7" fill="#a6e3a1" stroke="#a6e3a1" />
+    <circle cx="137" cy="91" r="7" fill="#a6e3a1" stroke="#a6e3a1" />
+    <path d="M104 114h32" stroke="#f5c2e7" />
+    <path d="M92 142v18m56-18v18" />
+    <path d="M71 163c0-8 6-14 14-14h70c8 0 14 6 14 14v29c0 8-6 14-14 14H85c-8 0-14-6-14-14v-29Z" />
+    <path d="m71 170-18 12v24l18 7m98-43 18 12v24l-18 7" stroke="#89b4fa" />
+    <path d="M95 206v8m50-8v8" />
+    <circle cx="88" cy="221" r="10" stroke="#f9e2af" />
+    <circle cx="152" cy="221" r="10" stroke="#f9e2af" />
+    <path d="M102 180h36" stroke="#94e2d5" />
+  </g>
+</svg>
