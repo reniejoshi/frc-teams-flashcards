@@ -148,21 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          FloatingActionButton(
-            onPressed: () {},
-            backgroundColor: AppColors.correct,
-            child: const Icon(Icons.check_sharp),
-          ),
-          FloatingActionButton(
-            onPressed: () {},
-            backgroundColor: AppColors.incorrect,
-            child: const Icon(Icons.close_sharp),
-          ),
-        ],
-      ),
     );
   }
 }
