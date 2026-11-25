@@ -1,4 +1,5 @@
 import 'package:frc_teams_flashcards/app_colors.dart';
+import 'package:frc_teams_flashcards/team_api.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -49,13 +50,77 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _answerController = TextEditingController();
-  late String _answer;
+  final TeamApi _teamApi = TeamApi.fromEnvironment();
+  Team? _team;
+  String? _error;
+  bool _isLoading = true;
   Color _borderColor = AppColors.accent;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTeam();
+  }
+
+  @override
+  void dispose() {
+    _answerController.dispose();
+    _teamApi.close();
+    super.dispose();
+  }
+
+  Future<void> _loadTeam() async {
+    if (!_isLoading) {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+        _borderColor = AppColors.accent;
+        _answerController.clear();
+      });
+    }
+
+    try {
+      final team = await _teamApi.fetchRandomTeam();
+      if (!mounted) return;
+      setState(() {
+        _team = team;
+        _isLoading = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _error = error.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _checkAnswer() {
+    final team = _team;
+    if (team == null) return;
+
+    setState(() {
+      _borderColor =
+          _answerController.text.trim().toLowerCase() ==
+              team.nickname.trim().toLowerCase()
+          ? AppColors.correct
+          : AppColors.incorrect;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: _isLoading ? null : _loadTeam,
+            tooltip: 'Load random team',
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -92,53 +157,54 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 16),
-                        Text(
-                          '2046',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        const SizedBox(height: 40),
-                        TextField(
-                          controller: _answerController,
-                          onSubmitted: (_) {
-                            setState(() {
-                              _answer = _answerController.text
-                                  .trim()
-                                  .toLowerCase();
-                              if (_answer == 'bear metal') {
-                                _borderColor = AppColors.correct;
-                              } else {
-                                _borderColor = AppColors.incorrect;
-                              }
-                            });
-                          },
-                          decoration: InputDecoration(
-                            fillColor: Colors.transparent,
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: _borderColor,
-                                width: 1.5,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: _borderColor,
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: _borderColor,
-                                width: 1.5,
-                              ),
-                            ),
+                        if (_isLoading) ...[
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 16),
+                          const Text('Loading team...'),
+                        ] else if (_error != null) ...[
+                          Text(
+                            _error!,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        const SizedBox(height: 24),
+                        ] else if (_team != null) ...[
+                          const SizedBox(height: 16),
+                          Text(
+                            '${_team!.number}',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 40),
+                          TextField(
+                            controller: _answerController,
+                            onSubmitted: (_) => _checkAnswer(),
+                            decoration: InputDecoration(
+                              fillColor: Colors.transparent,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: _borderColor,
+                                  width: 1.5,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: _borderColor,
+                                  width: 1.5,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: _borderColor,
+                                  width: 1.5,
+                                ),
+                              ),
+                            ),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          const SizedBox(height: 24),
+                        ],
                       ],
                     ),
                   ),
